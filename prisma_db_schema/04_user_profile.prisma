@@ -15,8 +15,10 @@ model UserProfile {
     bodyType  String? @map("body_type") // e.g. "ectomorph" | "mesomorph" | "endomorph"
 
     // ── Fitness Goals & Level ─────────────────────────────────────────────────
-    goal         String? @map("goal") // e.g. "weight_loss" | "muscle_gain" | "endurance"
-    fitnessLevel String? @map("fitness_level") // e.g. "beginner" | "intermediate" | "advanced"
+    goal                String? @map("goal") // e.g. "weight_loss" | "muscle_gain" | "endurance"
+    fitnessLevel        String? @map("fitness_level") // e.g. "beginner" | "intermediate" | "advanced"
+    bmi                 Float?  @map("bmi")
+    maintenanceCalories Int?    @map("maintenance_calories")
 
     // ── Workout Preferences ────────────────────────────────────────────────────
     workoutFrequencyPerWeek Int?     @map("workout_frequency_per_week") // e.g. 3

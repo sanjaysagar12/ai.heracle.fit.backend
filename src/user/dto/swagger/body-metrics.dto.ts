@@ -54,6 +54,12 @@ export class BodyMetricsResponseDto {
     @ApiPropertyOptional({ example: 'muscle_gain' })
     goal: string | null;
 
+    @ApiPropertyOptional({ example: 22.5, description: 'Body Mass Index' })
+    bmi: number | null;
+
+    @ApiPropertyOptional({ example: 2500, description: 'Daily maintenance calories (TDEE)' })
+    maintenanceCalories: number | null;
+
     @ApiPropertyOptional({ example: '2026-02-25T11:30:00.000Z' })
     updatedAt: Date | null;
 }

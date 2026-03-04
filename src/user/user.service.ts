@@ -57,6 +57,34 @@ export class UserService {
 	}
 
 	async saveBodyMetrics(userId: string, dto: SaveBodyMetricsDto) {
+		const existingProfile = await this.prisma.userProfile.findUnique({
+			where: { userId },
+		});
+
+		const age = dto.age ?? existingProfile?.age;
+		const gender = dto.gender ?? existingProfile?.gender;
+		const heightCm = dto.heightCm ?? existingProfile?.heightCm;
+		const weightKg = dto.weightKg ?? existingProfile?.weightKg;
+
+		let bmi: number | undefined;
+		let maintenanceCalories: number | undefined;
+
+		if (heightCm && weightKg) {
+			bmi = weightKg / Math.pow(heightCm / 100, 2);
+		}
+
+		if (age && gender && heightCm && weightKg) {
+			// Mifflin-St Jeor Equation
+			const bmr =
+				10 * weightKg +
+				6.25 * heightCm -
+				5 * age +
+				(gender.toLowerCase() === 'male' ? 5 : -161);
+
+			// Activity Factor (Defaulting to Sedentary = 1.2 for now)
+			maintenanceCalories = Math.round(bmr * 1.2);
+		}
+
 		return this.prisma.userProfile.upsert({
 			where: { userId },
 			create: {
@@ -69,6 +97,8 @@ export class UserService {
 				weightLbs: dto.weightLbs,
 				bodyType: dto.bodyType,
 				goal: dto.goal,
+				bmi,
+				maintenanceCalories,
 			},
 			update: {
 				...(dto.age !== undefined && { age: dto.age }),
@@ -79,6 +109,8 @@ export class UserService {
 				...(dto.weightLbs !== undefined && { weightLbs: dto.weightLbs }),
 				...(dto.bodyType !== undefined && { bodyType: dto.bodyType }),
 				...(dto.goal !== undefined && { goal: dto.goal }),
+				...(bmi !== undefined && { bmi }),
+				...(maintenanceCalories !== undefined && { maintenanceCalories }),
 				updatedAt: new Date(),
 			},
 			select: {
@@ -90,6 +122,8 @@ export class UserService {
 				weightLbs: true,
 				bodyType: true,
 				goal: true,
+				bmi: true,
+				maintenanceCalories: true,
 				updatedAt: true,
 			},
 		});
