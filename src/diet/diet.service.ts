@@ -35,10 +35,11 @@ Calories must be the total kcal for the entire meal.
 If you cannot determine a value, use 0.`;
 
 const SUGGESTION_PROMPT = `You are a professional nutritionist AI.
-Based on the user's BMI, maintenance calories, goal, and THEIR REMAINING NUTRITIONAL BUDGET FOR THE DAY, suggest a single balanced meal that helps them stay on track.
-The "Remaining Budget" tells you how many calories and macros they have left to consume today.
+Based on the provided nutritional status (Targets, Consumed, and remaining Gap), suggest a single balanced meal.
+Your goal is to fill the "Gap" (nutritional lack) while acknowledging when the user has done "good" by meeting or staying within targets.
+The "Gap" tells you exactly what is missing for the day.
 
-FORMATTING RULE: In the 'explanation' field, whenever you mention calories, protein, carbs, fat, or fiber, ALWAYS wrap ONLY the numeric value in curly braces, like this: {500}kcal, {30}g protein, {45}g carbs, {10}g fat, {5}g fiber.
+FORMATTING RULE: In the 'explanation' field, use curly braces {} sparingly (only 1 or 2 times total) to highlight the most critical nutritional value or benefit (e.g., {500kcal} or {high protein}).
 
 Respond with ONLY a valid JSON object.
 CRITICAL: DO NOT use curly braces {} inside the "items" JSON values. The numeric values in "items" must be raw numbers.
@@ -46,7 +47,7 @@ CRITICAL: DO NOT use markdown formatting, DO NOT wrap the response in \`\`\`json
 
 The object must follow this exact shape:
 {
-  "explanation": "A short, single-sentence explanation of why this meal is good for their profile and budget, using the curly brace syntax for numbers (e.g., {500}kcal). Keep it extremely concise.",
+  "explanation": "A very short (max 1 sentence) explanation. Use curly braces {} to highlight only 1-2 key items (e.g., {500kcal}). Keep it extremely concise.",
   "items": [
     { "name": string, "purpose": string, "calories": number, "carbs": number, "protein": number, "fat": number, "fiber": number }
   ]
@@ -380,9 +381,12 @@ export class DietService {
 
             const userContext = `
                 Profile: age ${profile.age}, gender ${profile.gender}, height ${profile.heightCm}cm, weight ${profile.weightKg}kg, goal ${profile.goal}.
-                Target Daily Calories: ${profile.targetCalories} kcal.
-                Remaining Budget for today: ${remaining.calories} kcal, ${remaining.protein}g protein, ${remaining.carbs}g carbs, ${remaining.fat}g fat, ${remaining.fiber}g fiber.
                 Meals per day: ${profile.mealsPerDay || 3}.
+
+                Daily Nutritional Status:
+                - Targets: { calories: ${status.targets.calories}kcal, protein: ${status.targets.protein}g, carbs: ${status.targets.carbs}g, fat: ${status.targets.fat}g, fiber: ${status.targets.fiber}g }
+                - Consumed Today: { calories: ${status.consumed.calories}kcal, protein: ${status.consumed.protein}g, carbs: ${status.consumed.carbs}g, fat: ${status.consumed.fat}g, fiber: ${status.consumed.fiber}g }
+                - Gap (Lacking): { calories: ${remaining.calories}kcal, protein: ${remaining.protein}g, carbs: ${remaining.carbs}g, fat: ${remaining.fat}g, fiber: ${remaining.fiber}g }
             `;
 
             const provider = (process.env.AI_PROVIDER ?? 'openai').toLowerCase();
@@ -454,7 +458,14 @@ export class DietService {
         description?: string,
         imageFile?: Express.Multer.File,
     ): Promise<string> {
-        const modelName = process.env.HUGGINGFACE_MODEL ?? 'meta-llama/Llama-3.2-11B-Vision-Instruct';
+        const hasValidImage = !!(imageFile && imageFile.buffer && imageFile.buffer.length > 0);
+
+        let modelName = process.env.HUGGINGFACE_MODEL ?? 'meta-llama/Llama-3.2-11B-Vision-Instruct';
+        // If no image is provided, use the more capable text model for better analysis
+        if (!hasValidImage) {
+            modelName = process.env.HUGGINGFACE_TEXT_MODEL ?? modelName;
+        }
+
         const hfProvider = process.env.HUGGINGFACE_PROVIDER ?? 'novita';
         const fullModelName = `${modelName}:${hfProvider}`;
 
@@ -464,9 +475,9 @@ export class DietService {
 
         const userContent: ContentPart[] = [];
 
-        if (imageFile) {
-            const mimeType = imageFile.mimetype || 'image/jpeg';
-            const b64 = imageFile.buffer.toString('base64');
+        if (hasValidImage) {
+            const mimeType = imageFile!.mimetype || 'image/jpeg';
+            const b64 = imageFile!.buffer.toString('base64');
             userContent.push({
                 type: 'image_url',
                 image_url: { url: `data:${mimeType};base64,${b64}` },
