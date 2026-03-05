@@ -52,7 +52,21 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.init();
+  return app.getHttpServer();
 }
 
-bootstrap();
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  bootstrap().then(server => {
+    const port = process.env.PORT ?? 3000;
+    server.listen(port);
+    console.log(`Application is running on: http://localhost:${port}`);
+  });
+}
+
+// Export the handler for Vercel
+export default async (req: any, res: any) => {
+  const server = await bootstrap();
+  return server(req, res);
+};
