@@ -233,7 +233,7 @@ export class DietService {
         }
 
         const provider = (process.env.AI_PROVIDER ?? 'openai').toLowerCase();
-
+        console.log("Provider", provider)
         const raw =
             provider === 'gemini'
                 ? await this.analyseWithGemini(description, imageFile)
@@ -463,46 +463,55 @@ export class DietService {
     ): Promise<string> {
         const hasValidImage = !!(imageFile && imageFile.buffer && imageFile.buffer.length > 0);
 
-        let modelName = process.env.HUGGINGFACE_MODEL ?? 'meta-llama/Llama-3.2-11B-Vision-Instruct';
-        // If no image is provided, use the more capable text model for better analysis
-        if (!hasValidImage) {
-            modelName = process.env.HUGGINGFACE_TEXT_MODEL ?? modelName;
-        }
+        let modelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
+        console.log("Model Name: ", modelName)
 
-        const hfProvider = process.env.HUGGINGFACE_PROVIDER ?? 'novita';
-        const fullModelName = `${modelName}:${hfProvider}`;
-
-        type ContentPart =
-            | { type: 'text'; text: string }
-            | { type: 'image_url'; image_url: { url: string } };
-
-        const userContent: ContentPart[] = [];
-
+        const hfProvider = process.env.HUGGINGFACE_PROVIDER;
+        const fullModelName = hfProvider && hfProvider.trim() !== ''
+            ? `${modelName}:${hfProvider}`
+            : modelName;
+        console.log("Hfprovider: ", hfProvider)
+        const userContent: any[] = [];
         if (hasValidImage) {
             const mimeType = imageFile!.mimetype || 'image/jpeg';
             const b64 = imageFile!.buffer.toString('base64');
             userContent.push({
                 type: 'image_url',
-                image_url: { url: `data:${mimeType};base64,${b64}` },
+                image_url: { url: `data:${mimeType};base64,${b64}` }
             });
         }
         if (description) {
             userContent.push({ type: 'text', text: description });
         }
+        console.log("fullModelName: ", fullModelName)
+        const payload = {
+            model: fullModelName,
+            messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'user', content: userContent }
+            ],
+            max_tokens: 1024,
+        };
 
         try {
-            const result = await this.hf.chatCompletion({
-                model: fullModelName,
-                messages: [
-                    { role: 'system', content: SYSTEM_PROMPT },
-                    { role: 'user', content: userContent as any },
-                ],
-                max_tokens: 1024,
+            const url = process.env.HUGGINGFACE_BASE_URL ?? 'https://router.huggingface.co/v1';
+            const { default: axios } = await import('axios');
+
+            const res = await axios.post(`${url.replace(/\/+$/, '')}/chat/completions`, payload, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.HUGGINGFACE_API}`
+                },
+                timeout: 60000 // 60s timeout for vision processing
             });
-            return result.choices[0]?.message?.content ?? '{}';
-        } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : String(err);
-            throw new InternalServerErrorException(`HuggingFace request failed: ${msg}`);
+
+            return res.data.choices[0]?.message?.content ?? '{}';
+        } catch (err: any) {
+            let msg = err.message;
+            if (err.response?.data?.error?.message) {
+                msg += ` | Details: ${err.response.data.error.message}`;
+            }
+            throw new InternalServerErrorException(`HuggingFace Vision failed: ${msg}`);
         }
     }
 
@@ -527,9 +536,11 @@ export class DietService {
     }
 
     private async getAiCompletionHuggingFace(system: string, user: string): Promise<string> {
-        const modelName = process.env.HUGGINGFACE_TEXT_MODEL ?? process.env.HUGGINGFACE_MODEL ?? 'meta-llama/Meta-Llama-3.1-8B-Instruct';
-        const hfProvider = process.env.HUGGINGFACE_PROVIDER ?? 'novita';
-        const fullModelName = `${modelName}:${hfProvider}`;
+        const modelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
+        const hfProvider = process.env.HUGGINGFACE_PROVIDER;
+        const fullModelName = hfProvider && hfProvider.trim() !== ''
+            ? `${modelName}:${hfProvider}`
+            : modelName;
         try {
             const result = await this.hf.chatCompletion({
                 model: fullModelName,
