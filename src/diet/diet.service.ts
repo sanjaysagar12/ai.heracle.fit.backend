@@ -98,6 +98,22 @@ export class DietService {
         });
     }
 
+    // ── Food Search ────────────────────────────────────────────────────────────
+
+    async searchFood(query: string) {
+        if (!query || query.trim().length === 0) return [];
+
+        return this.prisma.foodItem.findMany({
+            where: {
+                name: {
+                    contains: query.trim(),
+                    mode: 'insensitive', // PostgreSQL specific, but supported by Prisma if configured
+                },
+            },
+            take: 20,
+        });
+    }
+
     // ── Diet Preferences ───────────────────────────────────────────────────────
 
     async getDietPreferences(userId: string) {
@@ -466,11 +482,8 @@ export class DietService {
         let modelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
         console.log("Model Name: ", modelName)
 
-        const hfProvider = process.env.HUGGINGFACE_PROVIDER;
-        const fullModelName = hfProvider && hfProvider.trim() !== ''
-            ? `${modelName}:${hfProvider}`
-            : modelName;
-        console.log("Hfprovider: ", hfProvider)
+        const fullModelName = modelName;
+        console.log("Model Name: ", modelName)
         const userContent: any[] = [];
         if (hasValidImage) {
             const mimeType = imageFile!.mimetype || 'image/jpeg';
@@ -536,11 +549,7 @@ export class DietService {
     }
 
     private async getAiCompletionHuggingFace(system: string, user: string): Promise<string> {
-        const modelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
-        const hfProvider = process.env.HUGGINGFACE_PROVIDER;
-        const fullModelName = hfProvider && hfProvider.trim() !== ''
-            ? `${modelName}:${hfProvider}`
-            : modelName;
+        const fullModelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
         try {
             const result = await this.hf.chatCompletion({
                 model: fullModelName,

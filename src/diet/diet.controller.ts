@@ -27,6 +27,7 @@ import { AnalyseFoodRequestDto } from './dto/analyse-food-request.dto';
 import { AnalyseFoodResponseDto } from './dto/analyse-food-response.dto';
 import { DailyNutritionalStatusDto } from './dto/daily-nutritional-status.dto';
 import { DietSuggestionResponseDto } from './dto/diet-suggestion-response.dto';
+import { SearchFoodResponseDto } from './dto/search-food-response.dto';
 
 @ApiTags('Diet')
 @ApiBearerAuth('JWT')
@@ -60,6 +61,14 @@ export class DietController {
             date: diet.date,
             createdAt: diet.createdAt,
         };
+    }
+
+    @Get('food/search')
+    @ApiOperation({ summary: 'Search for food items by name' })
+    @ApiQuery({ name: 'query', required: true, description: 'Food name to search for' })
+    @ApiOkResponse({ type: [SearchFoodResponseDto] })
+    async searchFood(@Query('query') query: string) {
+        return this.dietService.searchFood(query);
     }
 
     @Get('meals')

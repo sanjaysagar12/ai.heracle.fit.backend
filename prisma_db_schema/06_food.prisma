@@ -1,0 +1,14 @@
+// Food — Search and Nutrition Table
+model FoodItem {
+    id        String   @id @default(uuid()) @db.Uuid
+    name      String   @unique
+    calories  Float
+    protein   Float
+    carbs     Float
+    fat       Float
+    fiber     Float
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("food_items")
+}
