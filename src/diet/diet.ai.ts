@@ -42,18 +42,26 @@ export async function runFoodAnalysis(
     imageBuffer?: Buffer,
     mimeType?: string
 ): Promise<any> {
-    const provider = (process.env.AI_PROVIDER ?? 'openai').toLowerCase();
-    const modelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
+    const provider = (process.env.FOOD_ANALYSE_PROVIDER ?? 'openai').toLowerCase();
+
+    let modelName: string;
+    if (provider === 'gemini') {
+        modelName = process.env.FOOD_ANALYSE_MODEL ?? 'gemini-1.5-flash';
+    } else if (provider === 'huggingface') {
+        modelName = process.env.FOOD_ANALYSE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
+    } else {
+        modelName = process.env.FOOD_ANALYSE_MODEL ?? 'gpt-4o';
+    }
 
     let raw: string;
     if (provider === 'gemini') {
         const parts = formatVisionPartsGemini(SYSTEM_PROMPT, description, imageBuffer, mimeType);
-        raw = await aiService.getGeminiCompletion(parts, process.env.GEMINI_MODEL);
+        raw = await aiService.getGeminiCompletion(parts, modelName);
     } else if (provider === 'huggingface') {
         const payload = formatVisionPayloadHuggingFace(modelName, SYSTEM_PROMPT, description, imageBuffer, mimeType);
         raw = await aiService.getHuggingFaceVision(payload);
     } else {
-        const payload = formatVisionPayloadOpenAI(process.env.OPENAI_MODEL ?? 'gpt-4o', SYSTEM_PROMPT, description, imageBuffer, mimeType);
+        const payload = formatVisionPayloadOpenAI(modelName, SYSTEM_PROMPT, description, imageBuffer, mimeType);
         raw = await aiService.getOpenAICompletion(payload);
     }
 
@@ -71,12 +79,20 @@ export async function runDietSuggestion(
     aiService: any,
     userContext: string
 ): Promise<any> {
-    const provider = (process.env.AI_PROVIDER ?? 'openai').toLowerCase();
-    const modelName = process.env.HUGGINGFACE_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
+    const provider = (process.env.DIET_SUGGESTION_PROVIDER ?? 'openai').toLowerCase();
+
+    let modelName: string;
+    if (provider === 'gemini') {
+        modelName = process.env.DIET_SUGGESTION_MODEL ?? 'gemini-1.5-flash';
+    } else if (provider === 'huggingface') {
+        modelName = process.env.DIET_SUGGESTION_MODEL ?? 'Qwen/Qwen2.5-VL-72B-Instruct';
+    } else {
+        modelName = process.env.DIET_SUGGESTION_MODEL ?? 'gpt-4o';
+    }
 
     let aiResponseRaw: string;
     if (provider === 'gemini') {
-        aiResponseRaw = await aiService.getGeminiCompletion([{ text: SUGGESTION_PROMPT }, { text: userContext }], process.env.GEMINI_MODEL);
+        aiResponseRaw = await aiService.getGeminiCompletion([{ text: SUGGESTION_PROMPT }, { text: userContext }], modelName);
     } else if (provider === 'huggingface') {
         aiResponseRaw = await aiService.getHuggingFaceCompletion({
             model: modelName,
@@ -88,7 +104,7 @@ export async function runDietSuggestion(
         });
     } else {
         aiResponseRaw = await aiService.getOpenAICompletion({
-            model: process.env.OPENAI_MODEL ?? 'gpt-4o',
+            model: modelName,
             messages: [
                 { role: 'system', content: SUGGESTION_PROMPT },
                 { role: 'user', content: userContext },

@@ -13,7 +13,7 @@ export class AiService {
         this.openai = new OpenAI({ apiKey: process.env.OPENAI_API });
         this.gemini = new GoogleGenerativeAI(process.env.GEMINI_API ?? '');
         this.hf = new InferenceClient(process.env.HUGGINGFACE_API ?? '', {
-            endpointUrl: process.env.HUGGINGFACE_BASE_URL,
+            endpointUrl: 'https://router.huggingface.co/v1',
         });
     }
 
@@ -53,7 +53,7 @@ export class AiService {
 
     async getHuggingFaceVision(payload: any): Promise<string> {
         try {
-            const url = process.env.HUGGINGFACE_BASE_URL ?? 'https://router.huggingface.co/v1';
+            const url = 'https://router.huggingface.co/v1';
             const { default: axios } = await import('axios');
 
             const res = await axios.post(`${url.replace(/\/+$/, '')}/chat/completions`, payload, {
