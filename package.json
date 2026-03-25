@@ -21,7 +21,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "npm run build:schema && prisma generate",
     "prisma:migrate": "npm run build:schema && prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "swagger:export": "ts-node -r tsconfig-paths/register scripts/export-swagger.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.908.0",

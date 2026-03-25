@@ -1,0 +1,2018 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Root greeting",
+        "tags": [
+          "root"
+        ]
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "operationId": "UserController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Profile returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get current authenticated user profile",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/body-metrics": {
+      "get": {
+        "operationId": "UserController_getBodyMetrics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BodyMetricsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get body metrics & goals",
+        "tags": [
+          "User"
+        ]
+      },
+      "post": {
+        "description": "Creates or updates age, gender, height, weight, body type and goal. All fields are optional.",
+        "operationId": "UserController_saveBodyMetrics",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveBodyMetricsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BodyMetricsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Save body metrics & goals",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/onboarding-status": {
+      "get": {
+        "operationId": "UserController_getOnboardingStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Check if user needs to fill body metrics or diet data",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/targets": {
+      "post": {
+        "description": "Creates or updates target calories, protein, carbs, fat, and fiber. All fields are optional.",
+        "operationId": "UserController_saveTargets",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveTargetsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Save target macros",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/auth/google/token": {
+      "post": {
+        "description": "For mobile clients to authenticate using Google ID token",
+        "operationId": "AuthController_authenticateAndroid",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AndroidTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleCallbackResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Authenticate with Google ID Token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/workout/today": {
+      "get": {
+        "description": "Returns the recommended workout plan for today. Returns null if workout preferences are not set.",
+        "operationId": "WorkoutController_getTodayWorkout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodayWorkoutResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get today's suggested workout",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/workout/sessions": {
+      "get": {
+        "description": "Returns all available workout sessions with their exercises",
+        "operationId": "WorkoutController_getSessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkoutSessionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get workout sessions",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/workout/exercises": {
+      "get": {
+        "description": "Returns a list of all available exercises from the database",
+        "operationId": "WorkoutController_getExercises",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExerciseListResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get all exercises",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/workout/preferences": {
+      "get": {
+        "description": "Returns the stored workout preferences for the authenticated user",
+        "operationId": "WorkoutController_getWorkoutPreferences",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutPreferencesResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get workout preferences",
+        "tags": [
+          "Workout"
+        ]
+      },
+      "post": {
+        "description": "Creates or updates workout preferences. All fields are optional — send only what you want to change.",
+        "operationId": "WorkoutController_saveWorkoutPreferences",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveWorkoutPreferencesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkoutPreferencesResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Save workout preferences",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/workout/session": {
+      "post": {
+        "operationId": "WorkoutController_createSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Create a new workout session",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/workout/session/{id}": {
+      "get": {
+        "operationId": "WorkoutController_getSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get a specific workout session",
+        "tags": [
+          "Workout"
+        ]
+      },
+      "patch": {
+        "operationId": "WorkoutController_updateSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSessionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Update a workout session",
+        "tags": [
+          "Workout"
+        ]
+      },
+      "delete": {
+        "operationId": "WorkoutController_deleteSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session deleted successfully"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Delete a workout session",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/workout/my-sessions": {
+      "get": {
+        "operationId": "WorkoutController_getUserSessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SessionResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get all workout sessions for the authenticated user",
+        "tags": [
+          "Workout"
+        ]
+      }
+    },
+    "/diet/status": {
+      "get": {
+        "operationId": "DietController_getStatus",
+        "parameters": [
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "Date in YYYY-MM-DD format. Defaults to today.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyNutritionalStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get daily nutritional status (target vs consumed)",
+        "tags": [
+          "Diet"
+        ]
+      }
+    },
+    "/diet/today": {
+      "get": {
+        "description": "Returns the diet plan for today (both suggestion text and structured items). Returns null if not yet available.",
+        "operationId": "DietController_getTodayDiet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Latest diet suggestion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DietSuggestionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get today's diet plan",
+        "tags": [
+          "Diet"
+        ]
+      }
+    },
+    "/diet/food/search": {
+      "get": {
+        "operationId": "DietController_searchFood",
+        "parameters": [
+          {
+            "name": "query",
+            "required": true,
+            "in": "query",
+            "description": "Food name to search for",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SearchFoodResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Search for food items by name",
+        "tags": [
+          "Diet"
+        ]
+      }
+    },
+    "/diet/meals": {
+      "get": {
+        "operationId": "DietController_getMealsByDate",
+        "parameters": [
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "Date in YYYY-MM-DD format. Defaults to today.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LogMealResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get meals for a specific date",
+        "tags": [
+          "Diet"
+        ]
+      }
+    },
+    "/diet/preferences": {
+      "get": {
+        "operationId": "DietController_getDietPreferences",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DietPreferencesResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get dietary preferences",
+        "tags": [
+          "Diet"
+        ]
+      },
+      "post": {
+        "description": "Creates or updates dietary preference, daily water intake, and meals per day. All fields optional.",
+        "operationId": "DietController_saveDietPreferences",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveDietPreferencesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DietPreferencesResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Save dietary preferences",
+        "tags": [
+          "Diet"
+        ]
+      }
+    },
+    "/diet/meal": {
+      "post": {
+        "description": "Save a meal to the database. The caller provides the food items with their nutritional info directly (no AI involved). Use POST /diet/ai/food first to get the nutritional breakdown from AI, then call this endpoint to save.",
+        "operationId": "DietController_logMeal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogMealRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogMealResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Log a meal",
+        "tags": [
+          "Diet"
+        ]
+      }
+    },
+    "/diet/ai/food": {
+      "post": {
+        "description": "Upload a food image and/or provide a text description. The AI (OpenAI or Gemini, controlled by AI_PROVIDER env) identifies each food item and returns calories, carbs, protein, fat, and fiber. Nothing is saved to the database.",
+        "operationId": "DietController_analyseFood",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyseFoodRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyseFoodResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Neither image nor description was provided."
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Analyse food with AI",
+        "tags": [
+          "Diet"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "nestjs-starter API",
+    "description": "nestjs-starter API documentation",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "JWT": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "Enter JWT token",
+        "in": "header"
+      },
+      "google-oauth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "http://localhost:3000/auth/google",
+            "scopes": {
+              "email profile": "Get email and profile info"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ProfileResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "username": {
+            "type": "string",
+            "example": "sanjaysagar"
+          },
+          "name": {
+            "type": "string",
+            "example": "SANJAY SAGAR"
+          },
+          "email": {
+            "type": "string",
+            "example": "sanjaysagar.main@gmail.com"
+          },
+          "avatarUrl": {
+            "type": "object",
+            "example": "https://lh3.googleusercontent.com/..."
+          },
+          "bio": {
+            "type": "object",
+            "example": "Athlete"
+          },
+          "role": {
+            "type": "string",
+            "example": "Pro Member"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-02-25T11:30:00.000Z"
+          },
+          "updatedAt": {
+            "type": "object",
+            "example": "2026-02-25T12:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "name",
+          "email",
+          "role",
+          "createdAt"
+        ]
+      },
+      "BodyMetricsResponseDto": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "object",
+            "example": 25
+          },
+          "gender": {
+            "type": "object",
+            "example": "male"
+          },
+          "heightCm": {
+            "type": "object",
+            "example": 175.5
+          },
+          "heightFt": {
+            "type": "object",
+            "example": 5.9
+          },
+          "weightKg": {
+            "type": "object",
+            "example": 75
+          },
+          "weightLbs": {
+            "type": "object",
+            "example": 165.3
+          },
+          "bodyType": {
+            "type": "object",
+            "example": "mesomorph"
+          },
+          "goal": {
+            "type": "object",
+            "example": "muscle_gain"
+          },
+          "bmi": {
+            "type": "object",
+            "example": 22.5,
+            "description": "Body Mass Index"
+          },
+          "maintenanceCalories": {
+            "type": "object",
+            "example": 2500,
+            "description": "Daily maintenance calories (TDEE)"
+          },
+          "goalWeightKg": {
+            "type": "object",
+            "example": 70
+          },
+          "goalWeightLbs": {
+            "type": "object",
+            "example": 154.3
+          },
+          "targetCalories": {
+            "type": "object",
+            "example": 2200
+          },
+          "targetProtein": {
+            "type": "object",
+            "example": 150.5
+          },
+          "targetCarbs": {
+            "type": "object",
+            "example": 250
+          },
+          "targetFat": {
+            "type": "object",
+            "example": 65
+          },
+          "targetFiber": {
+            "type": "object",
+            "example": 30
+          },
+          "updatedAt": {
+            "type": "object",
+            "example": "2026-02-25T11:30:00.000Z"
+          }
+        }
+      },
+      "OnboardingStatusDto": {
+        "type": "object",
+        "properties": {
+          "bodyMetricsNeeded": {
+            "type": "boolean",
+            "example": true,
+            "description": "True if age, gender, height, weight, or goal are missing"
+          },
+          "dietDataNeeded": {
+            "type": "boolean",
+            "example": false,
+            "description": "True if dietary preference or meals per day are missing"
+          }
+        },
+        "required": [
+          "bodyMetricsNeeded",
+          "dietDataNeeded"
+        ]
+      },
+      "SaveBodyMetricsDto": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "number",
+            "example": 25
+          },
+          "gender": {
+            "type": "string",
+            "example": "male",
+            "enum": [
+              "male",
+              "female",
+              "other",
+              "prefer_not_to_say"
+            ]
+          },
+          "heightCm": {
+            "type": "number",
+            "example": 175.5,
+            "description": "Height in centimetres"
+          },
+          "heightFt": {
+            "type": "number",
+            "example": 5.9,
+            "description": "Height in feet (display value)"
+          },
+          "weightKg": {
+            "type": "number",
+            "example": 75,
+            "description": "Weight in kilograms"
+          },
+          "weightLbs": {
+            "type": "number",
+            "example": 165.3,
+            "description": "Weight in pounds (display value)"
+          },
+          "bodyType": {
+            "type": "string",
+            "example": "mesomorph",
+            "enum": [
+              "ectomorph",
+              "mesomorph",
+              "endomorph"
+            ]
+          },
+          "goal": {
+            "type": "string",
+            "example": "muscle_gain",
+            "enum": [
+              "weight_loss",
+              "muscle_gain",
+              "endurance",
+              "flexibility",
+              "general_fitness"
+            ]
+          },
+          "goalWeightKg": {
+            "type": "number",
+            "example": 70,
+            "description": "Goal weight in kilograms"
+          },
+          "goalWeightLbs": {
+            "type": "number",
+            "example": 154.3,
+            "description": "Goal weight in pounds"
+          }
+        }
+      },
+      "SaveTargetsDto": {
+        "type": "object",
+        "properties": {
+          "targetCalories": {
+            "type": "number",
+            "example": 2500,
+            "description": "Target daily calories (kcal)"
+          },
+          "targetProtein": {
+            "type": "number",
+            "example": 150,
+            "description": "Target daily protein (g)"
+          },
+          "targetCarbs": {
+            "type": "number",
+            "example": 250,
+            "description": "Target daily carbohydrates (g)"
+          },
+          "targetFat": {
+            "type": "number",
+            "example": 70,
+            "description": "Target daily fat (g)"
+          },
+          "targetFiber": {
+            "type": "number",
+            "example": 35,
+            "description": "Target daily dietary fiber (g)"
+          }
+        }
+      },
+      "TargetsResponseDto": {
+        "type": "object",
+        "properties": {
+          "targetCalories": {
+            "type": "object",
+            "example": 2500
+          },
+          "targetProtein": {
+            "type": "object",
+            "example": 150
+          },
+          "targetCarbs": {
+            "type": "object",
+            "example": 250
+          },
+          "targetFat": {
+            "type": "object",
+            "example": 70
+          },
+          "targetFiber": {
+            "type": "object",
+            "example": 35
+          },
+          "updatedAt": {
+            "type": "object"
+          }
+        }
+      },
+      "AndroidTokenDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ij...",
+            "description": "Google ID token from Android client"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "GoogleUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "d9f8a1e2-..."
+          },
+          "username": {
+            "type": "string",
+            "example": "johndoe"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "bio": {
+            "type": "object",
+            "example": "A short bio"
+          },
+          "avatarUrl": {
+            "type": "object",
+            "example": "https://..."
+          },
+          "email": {
+            "type": "string",
+            "example": "johndoe@example.com"
+          },
+          "role": {
+            "type": "string",
+            "example": "user"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "name",
+          "email",
+          "role",
+          "createdAt"
+        ]
+      },
+      "GoogleCallbackResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user": {
+            "$ref": "#/components/schemas/GoogleUserDto"
+          }
+        },
+        "required": [
+          "token",
+          "user"
+        ]
+      },
+      "SetDto": {
+        "type": "object",
+        "properties": {
+          "kg": {
+            "type": "number",
+            "example": 60
+          },
+          "reps": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "kg",
+          "reps"
+        ]
+      },
+      "ExerciseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "ex-001"
+          },
+          "name": {
+            "type": "string",
+            "example": "Bench Press"
+          },
+          "desc": {
+            "type": "string",
+            "example": "Chest, Triceps, Shoulders"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://cdn.example.com/bench-press.png"
+          },
+          "sets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "desc",
+          "image",
+          "sets"
+        ]
+      },
+      "WorkoutSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "session-001"
+          },
+          "title": {
+            "type": "string",
+            "example": "Chest & Triceps"
+          },
+          "content": {
+            "type": "string",
+            "example": "Push day focused on upper body strength"
+          },
+          "category": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "exercisesCount": {
+            "type": "number",
+            "example": 4
+          },
+          "position": {
+            "type": "number",
+            "example": 1
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "content",
+          "category",
+          "exercisesCount",
+          "position",
+          "exercises"
+        ]
+      },
+      "TodayWorkoutResponseDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Suggested Muscle"
+          },
+          "highlight": {
+            "type": "string",
+            "example": "Bicep & Back"
+          },
+          "subtext": {
+            "type": "string",
+            "example": "Optional for hypertrophy"
+          },
+          "duration": {
+            "type": "number",
+            "example": 45
+          },
+          "intensity": {
+            "type": "string",
+            "example": "hard",
+            "enum": [
+              "easy",
+              "moderate",
+              "hard"
+            ]
+          },
+          "session": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutSessionDto"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "highlight",
+          "subtext",
+          "duration",
+          "intensity",
+          "session"
+        ]
+      },
+      "ExerciseListResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Bench Press"
+          },
+          "secondaryInfo": {
+            "type": "string",
+            "example": "Chest, Triceps, Shoulders"
+          },
+          "exerciseType": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://r2.heracle.fit/exercises/1.jpg"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "secondaryInfo",
+          "exerciseType",
+          "image"
+        ]
+      },
+      "WorkoutPreferencesResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a1b2c3d4-..."
+          },
+          "fitnessLevel": {
+            "type": "object",
+            "example": "intermediate"
+          },
+          "workoutFrequencyPerWeek": {
+            "type": "object",
+            "example": 4
+          },
+          "preferredWorkoutType": {
+            "type": "object",
+            "example": "strength"
+          },
+          "injuries": {
+            "type": "object",
+            "example": "left knee pain"
+          },
+          "availableDays": {
+            "example": [
+              "monday",
+              "wednesday",
+              "friday"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredWorkoutTime": {
+            "type": "object",
+            "example": "morning"
+          },
+          "sessionDurationMins": {
+            "type": "object",
+            "example": 45
+          },
+          "updatedAt": {
+            "type": "object",
+            "example": "2026-02-25T11:30:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "fitnessLevel",
+          "workoutFrequencyPerWeek",
+          "preferredWorkoutType",
+          "injuries",
+          "availableDays",
+          "preferredWorkoutTime",
+          "sessionDurationMins"
+        ]
+      },
+      "SaveWorkoutPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "fitnessLevel": {
+            "type": "string",
+            "example": "intermediate",
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced"
+            ]
+          },
+          "workoutFrequencyPerWeek": {
+            "type": "number",
+            "example": 4,
+            "description": "Number of workouts per week"
+          },
+          "preferredWorkoutType": {
+            "type": "string",
+            "example": "strength",
+            "enum": [
+              "strength",
+              "cardio",
+              "yoga",
+              "hiit",
+              "flexibility",
+              "mixed"
+            ]
+          },
+          "injuries": {
+            "type": "string",
+            "example": "left knee pain",
+            "description": "Any injuries or physical limitations"
+          },
+          "availableDays": {
+            "example": [
+              "monday",
+              "wednesday",
+              "friday"
+            ],
+            "description": "Days available to work out",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredWorkoutTime": {
+            "type": "string",
+            "example": "morning",
+            "enum": [
+              "morning",
+              "afternoon",
+              "evening",
+              "flexible"
+            ]
+          },
+          "sessionDurationMins": {
+            "type": "number",
+            "example": 45,
+            "description": "Preferred session duration in minutes"
+          }
+        }
+      },
+      "CreateSessionRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Morning Push Session",
+            "description": "Name of the workout session"
+          },
+          "category": {
+            "example": [
+              "Strength",
+              "Chest"
+            ],
+            "description": "Categories associated with the session",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sessionData": {
+            "type": "object",
+            "description": "JSON array of exercise targets",
+            "example": [
+              {
+                "exercise id": 1,
+                "set1": {
+                  "targetRep": 10,
+                  "targetKg": 10
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "category",
+          "sessionData"
+        ]
+      },
+      "SessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Morning Push Session"
+          },
+          "category": {
+            "example": [
+              "Strength",
+              "Chest"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sessionData": {
+            "type": "object"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "category",
+          "sessionData",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateSessionRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Updated Session Name"
+          },
+          "category": {
+            "example": [
+              "Strength"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sessionData": {
+            "type": "object",
+            "description": "JSON array of exercise targets"
+          }
+        }
+      },
+      "NutrientsDto": {
+        "type": "object",
+        "properties": {
+          "calories": {
+            "type": "number",
+            "example": 2000
+          },
+          "protein": {
+            "type": "number",
+            "example": 150.5
+          },
+          "carbs": {
+            "type": "number",
+            "example": 250
+          },
+          "fat": {
+            "type": "number",
+            "example": 65
+          },
+          "fiber": {
+            "type": "number",
+            "example": 30
+          }
+        },
+        "required": [
+          "calories",
+          "protein",
+          "carbs",
+          "fat",
+          "fiber"
+        ]
+      },
+      "DailyNutritionalStatusDto": {
+        "type": "object",
+        "properties": {
+          "targets": {
+            "$ref": "#/components/schemas/NutrientsDto"
+          },
+          "consumed": {
+            "$ref": "#/components/schemas/NutrientsDto"
+          }
+        },
+        "required": [
+          "targets",
+          "consumed"
+        ]
+      },
+      "FoodItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Grilled Chicken"
+          },
+          "purpose": {
+            "type": "string",
+            "example": "Protein"
+          },
+          "calories": {
+            "type": "number",
+            "example": 300
+          },
+          "protein": {
+            "type": "number",
+            "example": 40
+          },
+          "carbs": {
+            "type": "number",
+            "example": 0
+          },
+          "fat": {
+            "type": "number",
+            "example": 10
+          },
+          "fiber": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "name",
+          "purpose",
+          "calories",
+          "protein",
+          "carbs",
+          "fat",
+          "fiber"
+        ]
+      },
+      "DietSuggestionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a1b2c3d4..."
+          },
+          "suggestion": {
+            "type": "string",
+            "example": "A balanced meal with {30g protein}..."
+          },
+          "suggestedMeal": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FoodItemDto"
+            }
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-05"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "suggestion",
+          "suggestedMeal",
+          "date",
+          "createdAt"
+        ]
+      },
+      "SearchFoodResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Apple Medium"
+          },
+          "calories": {
+            "type": "number",
+            "example": 95
+          },
+          "protein": {
+            "type": "number",
+            "example": 0.5
+          },
+          "carbs": {
+            "type": "number",
+            "example": 25
+          },
+          "fat": {
+            "type": "number",
+            "example": 0.3
+          },
+          "fiber": {
+            "type": "number",
+            "example": 4.4
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "calories",
+          "protein",
+          "carbs",
+          "fat",
+          "fiber"
+        ]
+      },
+      "LogMealResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid-..."
+          },
+          "userId": {
+            "type": "string",
+            "example": "uuid-..."
+          },
+          "mealType": {
+            "type": "string",
+            "example": "lunch",
+            "enum": [
+              "breakfast",
+              "lunch",
+              "dinner",
+              "snack"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-04"
+          },
+          "time": {
+            "type": "string",
+            "example": "13:30"
+          },
+          "data": {
+            "description": "Array of food items with nutritional info",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FoodItemDto"
+            }
+          },
+          "latestSuggestion": {
+            "$ref": "#/components/schemas/DietSuggestionResponseDto"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-03-04T08:05:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "mealType",
+          "date",
+          "time",
+          "data",
+          "createdAt"
+        ]
+      },
+      "DietPreferencesResponseDto": {
+        "type": "object",
+        "properties": {
+          "dietaryPreference": {
+            "type": "object",
+            "example": "vegan"
+          },
+          "dailyWaterLitres": {
+            "type": "object",
+            "example": 2.5
+          },
+          "mealsPerDay": {
+            "type": "object",
+            "example": 3
+          },
+          "updatedAt": {
+            "type": "object",
+            "example": "2026-02-26T07:23:00.000Z"
+          }
+        }
+      },
+      "SaveDietPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "dietaryPreference": {
+            "type": "string",
+            "example": "vegan",
+            "enum": [
+              "vegan",
+              "vegetarian",
+              "keto",
+              "paleo",
+              "mediterranean",
+              "none"
+            ]
+          },
+          "dailyWaterLitres": {
+            "type": "number",
+            "example": 2.5,
+            "description": "Daily water intake in litres"
+          },
+          "mealsPerDay": {
+            "type": "number",
+            "example": 3,
+            "description": "Number of meals per day"
+          }
+        }
+      },
+      "FoodItemInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Grilled Chicken",
+            "description": "Name of the food item"
+          },
+          "calories": {
+            "type": "number",
+            "example": 280,
+            "description": "Calories (kcal)"
+          },
+          "carbs": {
+            "type": "number",
+            "example": 0,
+            "description": "Carbohydrates (g)"
+          },
+          "protein": {
+            "type": "number",
+            "example": 53,
+            "description": "Protein (g)"
+          },
+          "fat": {
+            "type": "number",
+            "example": 6,
+            "description": "Fat (g)"
+          },
+          "fiber": {
+            "type": "number",
+            "example": 0,
+            "description": "Dietary fiber (g)"
+          }
+        },
+        "required": [
+          "name",
+          "calories",
+          "carbs",
+          "protein",
+          "fat",
+          "fiber"
+        ]
+      },
+      "LogMealRequestDto": {
+        "type": "object",
+        "properties": {
+          "mealType": {
+            "type": "string",
+            "example": "breakfast",
+            "enum": [
+              "breakfast",
+              "lunch",
+              "dinner",
+              "snack"
+            ],
+            "description": "Type of meal"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-04",
+            "description": "Date of the meal (YYYY-MM-DD)"
+          },
+          "time": {
+            "type": "string",
+            "example": "08:30",
+            "description": "Time of the meal (HH:MM)"
+          },
+          "data": {
+            "description": "Array of food items with their nutritional info",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FoodItemInputDto"
+            }
+          }
+        },
+        "required": [
+          "mealType",
+          "date",
+          "time",
+          "data"
+        ]
+      },
+      "AnalyseFoodRequestDto": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "format": "binary",
+            "description": "Image of the food (JPEG/PNG). At least one of image or description is required."
+          },
+          "description": {
+            "type": "string",
+            "example": "2 boiled eggs and a slice of whole wheat toast",
+            "description": "Text description of the food. At least one of image or description is required."
+          }
+        }
+      },
+      "AnalyseFoodResponseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Grilled Chicken Salad",
+            "description": "A short, descriptive name for the meal"
+          },
+          "description": {
+            "type": "string",
+            "example": "A healthy mix of grilled chicken breast and fresh leafy greens.",
+            "description": "A brief description of the meal"
+          },
+          "calories": {
+            "type": "number",
+            "example": 450,
+            "description": "Total calories (kcal)"
+          },
+          "carbs": {
+            "type": "number",
+            "example": 10,
+            "description": "Total carbohydrates (g)"
+          },
+          "protein": {
+            "type": "number",
+            "example": 45,
+            "description": "Total protein (g)"
+          },
+          "fat": {
+            "type": "number",
+            "example": 15,
+            "description": "Total fat (g)"
+          },
+          "fiber": {
+            "type": "number",
+            "example": 5,
+            "description": "Total dietary fiber (g)"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "calories",
+          "carbs",
+          "protein",
+          "fat",
+          "fiber"
+        ]
+      }
+    }
+  }
+}
