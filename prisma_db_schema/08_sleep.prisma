@@ -1,13 +1,15 @@
 model SleepCycle {
-  id        String   @id @default(uuid()) @map("id") @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  sleepData Json     @map("sleep_data") // Stores date, sleephrs, bedtime, wakeup_time
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+    id          String   @id @default(uuid()) @map("id") @db.Uuid
+    userId      String   @map("user_id") @db.Uuid
+    sleepData   Json     @map("sleep_data") // Stores date, sleephrs, bedtime, wakeup_time
+    SleepCycle  String?  @map("insight")
+    insightDate String?  @map("insight_date") // YYYY-MM-DD
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
 
-  // relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-  @@map("sleep_cycles")
+    @@index([userId])
+    @@map("sleep_cycles")
 }

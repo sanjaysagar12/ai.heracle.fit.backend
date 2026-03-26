@@ -1054,6 +1054,26 @@
           "Sleep"
         ]
       }
+    },
+    "/sleep/insight": {
+      "get": {
+        "operationId": "SleepController_getAiInsight",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "Get AI sleep coach insight",
+        "tags": [
+          "Sleep"
+        ]
+      }
     }
   },
   "info": {

@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSleepDataDto } from './dto/sleep.dto';
+import { AiService } from '../ai/ai.service';
+import { runSleepInsight } from './sleep.ai';
 
 @Injectable()
 export class SleepService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly aiService: AiService,
+  ) { }
 
   async addSleepData(userId: string, dto: CreateSleepDataDto) {
     const sleepCycle = await this.prisma.sleepCycle.findFirst({
@@ -63,5 +68,50 @@ export class SleepService {
     }
 
     return { sleepData: currentData };
+  }
+
+  async getAiInsight(userId: string) {
+    const today = new Date().toISOString().split('T')[0];
+
+    const sleepCycle = await this.prisma.sleepCycle.findFirst({
+      where: { userId },
+    });
+
+    // If we already have an insight for today, return it
+    if (sleepCycle?.insight && sleepCycle?.insightDate === today) {
+      return { insight: sleepCycle.insight };
+    }
+
+    const sleepData = await this.getSleepData(userId);
+    const context = JSON.stringify(sleepData.sleepData);
+
+    try {
+      const result = await runSleepInsight(this.aiService, context);
+      const insightText = result.insight;
+
+      if (sleepCycle) {
+        await this.prisma.sleepCycle.update({
+          where: { id: sleepCycle.id },
+          data: {
+            insight: insightText,
+            insightDate: today,
+          },
+        });
+      } else {
+        await this.prisma.sleepCycle.create({
+          data: {
+            userId,
+            sleepData: [],
+            insight: insightText,
+            insightDate: today,
+          },
+        });
+      }
+
+      return { insight: insightText };
+    } catch (error) {
+      console.error('[SleepService] AI Insight failed:', error);
+      throw new InternalServerErrorException('Failed to generate sleep insight');
+    }
   }
 }

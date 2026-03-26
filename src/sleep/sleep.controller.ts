@@ -22,4 +22,10 @@ export class SleepController {
   async getSleepData(@Req() req: any) {
     return this.sleepService.getSleepData(req.user.id);
   }
+
+  @Get('insight')
+  @ApiOperation({ summary: 'Get AI sleep coach insight' })
+  async getAiInsight(@Req() req: any) {
+    return this.sleepService.getAiInsight(req.user.id);
+  }
 }
