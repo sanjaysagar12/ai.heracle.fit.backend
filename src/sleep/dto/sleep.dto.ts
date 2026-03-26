@@ -18,3 +18,8 @@ export class SleepCycleResponseDto {
   @ApiProperty({ type: [CreateSleepDataDto] })
   sleepData: CreateSleepDataDto[];
 }
+
+export class SleepInsightResponseDto {
+  @ApiProperty({ example: 'Your circadian rhythm is well-aligned. Maintaining {consistency} is key.' })
+  insight: string;
+}

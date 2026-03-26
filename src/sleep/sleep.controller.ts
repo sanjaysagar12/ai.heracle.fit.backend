@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags, ApiOkResponse } from '@nestjs/swagger';
 import { SleepService } from './sleep.service';
-import { CreateSleepDataDto, SleepCycleResponseDto } from './dto/sleep.dto';
+import { CreateSleepDataDto, SleepCycleResponseDto, SleepInsightResponseDto } from './dto/sleep.dto';
 
 @ApiTags('Sleep')
 @ApiBearerAuth('JWT')
@@ -25,7 +25,8 @@ export class SleepController {
 
   @Get('insight')
   @ApiOperation({ summary: 'Get AI sleep coach insight' })
-  async getAiInsight(@Req() req: any) {
+  @ApiOkResponse({ type: SleepInsightResponseDto })
+  async getAiInsight(@Req() req: any): Promise<SleepInsightResponseDto> {
     return this.sleepService.getAiInsight(req.user.id);
   }
 }

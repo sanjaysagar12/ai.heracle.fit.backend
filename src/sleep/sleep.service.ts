@@ -78,8 +78,8 @@ export class SleepService {
     });
 
     // If we already have an insight for today, return it
-    if (sleepCycle?.insight && sleepCycle?.insightDate === today) {
-      return { insight: sleepCycle.insight };
+    if (sleepCycle?.SleepCycle && sleepCycle?.insightDate === today) {
+      return { insight: sleepCycle.SleepCycle };
     }
 
     const sleepData = await this.getSleepData(userId);
@@ -93,7 +93,7 @@ export class SleepService {
         await this.prisma.sleepCycle.update({
           where: { id: sleepCycle.id },
           data: {
-            insight: insightText,
+            SleepCycle: insightText,
             insightDate: today,
           },
         });
@@ -102,7 +102,7 @@ export class SleepService {
           data: {
             userId,
             sleepData: [],
-            insight: insightText,
+            SleepCycle: insightText,
             insightDate: today,
           },
         });

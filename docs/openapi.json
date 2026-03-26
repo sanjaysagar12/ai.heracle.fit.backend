@@ -1061,7 +1061,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SleepInsightResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2418,6 +2425,18 @@
         },
         "required": [
           "sleepData"
+        ]
+      },
+      "SleepInsightResponseDto": {
+        "type": "object",
+        "properties": {
+          "insight": {
+            "type": "string",
+            "example": "Your circadian rhythm is well-aligned. Maintaining {consistency} is key."
+          }
+        },
+        "required": [
+          "insight"
         ]
       }
     }
